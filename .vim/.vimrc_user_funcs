@@ -1,1 +1,28 @@
-/home/taoyl/.vim/.vimrc_user_funcs
+"" User-defined functions for vimrc
+"" Yuliang Tao
+"" Wed May 11 22:43:26 PDT 2016
+"" 
+function! DiffRemote()
+    " Diff current buffer file with the file on server
+    " Added at May 11, 2016
+     
+    "Toggle the flag (or set it if it doesn't yet exist)...
+    let t:diff_remote_open = exists('t:diff_remote_open') ? !t:diff_remote_open : 0
+
+    if !t:diff_remote_open
+        let curr_fname = expand('%:p')
+        let remote_fname = substitute(curr_fname, '\(MAIN\/\)[^\/]*\/', '\1sanity/', '')
+        if !filereadable(remote_fname)
+            echo "** No such a file on remote!!"
+        else
+            " diff current file with the latest version on remote
+            exec ":vertical diffs ".remote_fname
+            exec ":diffupdate"
+        endif
+    else
+        " delete buffer matching with keyword 'sanity'
+        exec ":bd".bufnr("sanity")
+    endif
+endfunction
+" DiffRemote()
+

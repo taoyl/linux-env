@@ -1,1 +1,302 @@
-/home/taoyl/.vimrc
+"***************************************************************************
+"**************************** Nero's VIMRC *********************************
+"***************************************************************************
+set nocompatible
+
+" ------------- pathogen ------------------ 
+execute pathogen#infect()
+
+" ------------- vundle -------------------- 
+" Comment the following lines once all plugins are ready, 
+" else cannot detect filetype verilog_systemverilog 
+ if has('win32')
+     source $VIM/vimfiles/_vimrc_vundle
+ else
+     source ~/.vim/.vimrc_vundle
+ endif
+
+
+" --------  User-defined Funcions --------- 
+if has('win32')
+    source $VIM/vimfiles/_vimrc_user_funcs
+else
+    source ~/.vim/.vimrc_user_funcs
+endif
+
+
+" ------------- General ------------------- 
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+set nobackup             " do not keep a backup file, use versions instead
+set history=100          " keep 100 lines of command line history
+set showcmd              " display incomplete commands
+set incsearch            " do incremental searching
+set hlsearch             " highlight search
+set tabstop=4            " one tab equals to 4 spaces
+set softtabstop=4        " one tab equals to 4 spaces
+set expandtab            " expand tab
+set autoindent           " auto indent
+set smartindent          " use smart indent
+set cindent shiftwidth=4 " indent width
+" set mouse=a              " enable mouse
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+          \ | wincmd p | diffthis
+endif
+if has("autocmd")
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+endif " has("autocmd")
+
+" ------------- Appearance ---------------- 
+set t_Co=256  " enable 256 colors
+" set font for gui mode
+if has("win32")
+    set guifont=Courier_New:h11
+else
+    " set guifont=Courier\ 10\ Pitch\ 12
+    set guifont=DejaVu\ Sans\ Mono\ 11
+endif
+syntax on
+set cursorcolumn          " enable vertical cursor
+set cursorline            " enable horizontal cursor
+set number                " enable line number
+set relativenumber        " enable relative number
+set ruler                 " enable ruler
+set guioptions-=T         " hide tool bar for gui mode
+set encoding=utf-8        " encodings
+set fileformat=unix       " set fileformat
+filetype plugin indent on " enable filetype & use plugin indent
+syntax enable
+set foldmethod=marker
+
+" ------------- Key Mappings -------------- 
+map Q gq " Don't use Ex mode, use Q for formatting
+" disable direction keys
+noremap <Up>    <Nop>
+noremap <Down>  <Nop>
+noremap <Left>  <Nop>
+noremap <Right> <Nop>
+" map j/k to gj/gk when no preceeding number
+noremap <silent> <expr>j (v:count==0 ? 'gj' : 'j')
+noremap <silent> <expr>k (v:count==0 ? 'gk' : 'k')
+
+" switch window
+nnoremap <C-H> <C-W>h
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
+
+" map jj to ESC 
+inoremap jj <ESC>
+
+" change <Leader> from \ to ,
+let mapleader = ","
+
+" change word to uppercase and lowercase
+inoremap <C-u> <esc>gUiwea
+inoremap <C-l> <esc>guiwea
+
+" shortcut mappings
+set pastetoggle=<F5>
+nmap <Leader>ss :%s#\v<C-R><C-W>#
+vmap <Leader>*  y/<C-R>"<CR>
+if has("win32")
+    nmap <silent> <F4> :e $VIM/_vimrc<CR>
+else
+    nmap <silent> <F4> :e ~/.vimrc<CR>
+endif
+nmap <Leader>df :call DiffRemote()<CR>
+
+
+" ------------- NERDTree -------------------- 
+map <silent> <F3> :NERDTreeToggle<CR>
+let NERDTreeWinSize=32
+let NERDTreeStatusline=0
+let NERDChristmasTree=1
+let NERDTreeHighlightCursorline=1
+" change default arrows
+" let g:NERDTreeDirArrows = 1
+" let g:NERDTreeDirArrowExpandable = '-'
+" let g:NERDTreeDirArrowCollapsible = '+'
+" Close vim if the only window left open is a NERDTree
+if has("autocmd")
+    autocmd bufenter * 
+      \ if (winnr("$") == 1 && exists("b:NERDTreeType") && 
+          \b:NERDTreeType == "primary") | 
+      \ q | endif
+endif
+
+
+" ------------- indentLine ------------------ 
+map <leader>il :IndentLinesToggle<CR>
+let g:indentLine_char = '¦'
+" change color for Vim
+let g:indentLine_color_term = 239
+" change color for GVim
+let g:indentLine_color_gui = '#cccccc'
+
+
+" ------------- syntastic ------------------- 
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+
+
+
+" ------------- ctrlp ----------------------- 
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+" set working directory when invoking ctrlp without start dir
+let g:ctrlp_working_path_mode = 'ra'
+
+
+" ------------- Powerline ------------------- 
+set laststatus=2   " Always show the statusline
+"display full filename. Use short to display a short path
+let g:Powerline_stl_path_style = 'full'
+let g:Powerline_cache_enabled = 0
+" let g:Powerline_dividers_override = ['>>', '>', '<<', '<']
+
+
+" ------------- Lightline ------------------- 
+" Use lightline to replace powerline
+" https://github.com/itchyny/lightline.vim
+
+
+" ------------- minbufexpl ------------------ 
+map <silent> <F6> :MBEToggle<CR>
+noremap <C-TAB>   :MBEbn<CR>
+noremap <C-S-TAB> :MBEbp<CR>
+let g:miniBufExplMapWindowNavVim = 1 
+
+
+" ------------- taglist --------------------- 
+" nnoremap <silent> <F7> :TlistToggle<CR>
+let Tlist_Show_One_File = 1  " Show tags for the current buffer only
+let Tlist_Exit_OnlyWindow = 1 " Close Vim if the taglist is the only window
+let Tlist_Use_Right_Window = 1 " Place the taglist window on the right side
+" set ctags path
+if has('win32')
+    let Tlist_Ctags_Cmd = 'C:\taoyl\Development\bin\ctags.exe'
+else
+    let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+endif
+
+" ---------------- Tagbar ------------------- 
+" define rules for verilog_systemverilog file type.
+let g:tagbar_type_verilog_systemverilog= {
+    \ 'ctagstype' : 'systemverilog',
+    \ 'kinds'     : [
+        \'c:classes',
+        \'t:tasks',
+        \'f:functions',
+        \'m:modules',
+        \'i:interfaces',
+        \'v:variables',
+        \'d:defines',
+        \'e:typedefs',
+        \'a:parameters'
+  \]
+\}
+if has('win32')
+    let g:tagbar_ctags_bin = 'C:\taoyl\Development\bin\ctags.exe'
+else
+    let g:tagbar_ctags_bin = '/usr/bin/ctags'
+endif
+nnoremap <silent> <F7> :TagbarToggle<CR>
+
+
+" ------------- commentary ------------------ 
+"  Use // as the comment sign for verilog_systemverilog
+"  The default is /*
+autocmd FileType verilog_systemverilog setlocal commentstring=//%s
+
+" ------------- neocomplete(not supported) -- 
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+
+" ------------- easymotion ------------------ 
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap <Leader>s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map  <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+map  <Leader>l <Plug>(easymotion-lineforward)
+map  <Leader>j <Plug>(easymotion-j)
+map  <Leader>k <Plug>(easymotion-k)
+map  <Leader>h <Plug>(easymotion-linebackward)
+let  g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+map  <Leader>b <Plug>(easymotion-bd-w)
+nmap <Leader>b <Plug>(easymotion-overwin-w)
+
+
+" -------- incsearch-easymotion ------------- 
+map z/  <Plug>(incsearch-easymotion-/)
+map z?  <Plug>(incsearch-easymotion-?)
+map zg/ <Plug>(incsearch-easymotion-stay)
+
+
+" ------------- vim-grepper -----------------
+nnoremap <leader>grw :Grepper -tool grep -switch -cword -noprompt -noquickfix<cr>
+nnoremap <leader>gr :Grepper -tool grep -switch -prompt<cr>
+" nmap gr <plug>(GrppperOperator)
+" xmap gr <plug>(GrepperOperator)
+
+
+" ---------------- colorscheme---------------
+" set background=light
+set background=dark
+colorscheme PaperColor
+" colorscheme solarized
+
+"" These settings must be put afer colorscheme
+" for solarized
+" hi CursorColumn cterm=NONE ctermbg=brown ctermfg=white guibg=lightgrey 
+" hi CursorLine   cterm=NONE ctermbg=brown ctermfg=white guibg=lightgrey
+" for PaperColor 
+" hi CursorColumn cterm=NONE ctermbg=brown ctermfg=NONE guibg=darkgreen
+" hi CursorLine   cterm=NONE ctermbg=brown ctermfg=NONE guibg=darkgreen
+
