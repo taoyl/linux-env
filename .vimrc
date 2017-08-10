@@ -236,6 +236,7 @@ nnoremap <silent> <F7> :TagbarToggle<CR>
 "  Use // as the comment sign for verilog_systemverilog
 "  The default is /*
 autocmd FileType verilog_systemverilog setlocal commentstring=//%s
+autocmd FileType c setlocal commentstring=//%s
 
 " ------------- neocomplete(not supported) -- 
 " Disable AutoComplPop.
