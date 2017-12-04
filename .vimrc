@@ -10,7 +10,7 @@ execute pathogen#infect()
 " Comment the following lines once all plugins are ready, 
 " else cannot detect filetype verilog_systemverilog 
  if has('win32')
-     source $VIM/vimfiles/_vimrc_vundle
+     source $VIM/vimfiles/.vimrc_vundle
  else
      source ~/.vim/.vimrc_vundle
  endif
@@ -18,7 +18,7 @@ execute pathogen#infect()
 
 " --------  User-defined Funcions --------- 
 if has('win32')
-    source $VIM/vimfiles/_vimrc_user_funcs
+    source $VIM/vimfiles/.vimrc_user_funcs
 else
     source ~/.vim/.vimrc_user_funcs
 endif
