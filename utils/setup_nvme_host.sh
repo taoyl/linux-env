@@ -30,7 +30,7 @@ function check_pass () {
 
 function install_tests () {
     cp -r nvme_tests/py_tests /root/nvme
-    rm -r nvme_tests
+    rm -rf nvme_tests
     echo "[ok] nvme tests installed"
 }
 
@@ -119,6 +119,23 @@ else
     fi
 fi
 
+#----------------------------------------------------------------------------
+# data file check
+#----------------------------------------------------------------------------
+mp4_files=(small.mp4 medium.mp4 large.mp4)
+data_file_exist=1
+for df in ${mp4_files[@]}; do
+    if [ ! -e "/root/nvme/data/$df" ]; then
+        echo "** Data file $df not found in /root/nvme/data"
+        data_file_exist=0
+    fi
+done
+if [ $data_file_exist -eq 0 ]; then
+    echo "Please copy data files to /root/nvme/data"
+    exit 1
+else
+    echo "[ok] data files check pass"
+fi
 
 #----------------------------------------------------------------------------
 # check python version
