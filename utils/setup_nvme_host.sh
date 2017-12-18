@@ -158,7 +158,7 @@ fi
 #----------------------------------------------------------------------------
 #nose_version=`pip3 list | grep '\<nose\>' | sed 's/[()]//g'`
 #if [ "$nose_version" == "" ]; then
-nose_installed=`python3 -c "import nose" 2>&1 | grep 'ImportError'`
+nose_installed=`python3 -c "import nose" 2>&1 | grep 'ImportError\|ModuleNotFoundError'`
 if [ "$nose_installed" != "" ]; then
     echo "** No python-nose found"
     fix_or_exit
