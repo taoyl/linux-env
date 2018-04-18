@@ -3,7 +3,10 @@
 # Host setup for NVMe test
 # taoyl, created at Fri Dec  1 14:54:46 CST 2017
 
-# Global settings, default for NanoAP
+# Global settings
+nvme_tests_path="$HOME/nvme_tests"
+nvme_cli_path="/usr/local/sbin"
+tmp_clone_path="tmp"
 
 
 #----------------------------------------------------------------------------
@@ -29,8 +32,8 @@ function check_pass () {
 }
 
 function install_tests () {
-    cp -r nvme_tests/py_tests /root/nvme
-    rm -rf nvme_tests
+    mv $tmp_clone_path/py_tests $nvme_tests_path
+    rm -rf $tmp_clone_path
     echo "[ok] nvme tests installed"
 }
 
@@ -38,7 +41,7 @@ function clone_nvmecli () {
     if [ "$(which git)" == "" ]; then
         sudo apt-get install -y git
     fi
-    git clone https://github.com/taoyl/nvme_tests.git 
+    git clone https://github.com/taoyl/nvme_tests.git $tmp_clone_path
     echo
 }
 
@@ -83,12 +86,12 @@ fi
 #----------------------------------------------------------------------------
 # check nvme-cli
 #----------------------------------------------------------------------------
-if [ "$(which nvme)" == "" ]; then
+if [ ! -e "$nvme_cli_path/nvme" ]; then
     echo "** No nvme-cli found"
     fix_or_exit
     clone_nvmecli
-    if [ -e "nvme_tests/nvme" ]; then
-        cp nvme_tests/nvme /usr/local/bin/
+    if [ -e "$tmp_clone_path/nvme" ]; then
+        cp $tmp_clone_path/nvme $nvme_cli_path
         echo "[ok] nvme-cli installed"
     else
         echo "** Fail to install nvme-cli"
@@ -101,16 +104,16 @@ fi
 #----------------------------------------------------------------------------
 # check host tests
 #----------------------------------------------------------------------------
-if [ -e "/root/nvme/run_nvme_test.py" ]; then
+if [ -e "$nvme_tests_path/run_nvme_test.py" ]; then
     echo "[ok] nvme tests check pass"
 else
     echo "** No nvme tests found"
     fix_or_exit
-    if [ -e "nvme_tests/py_tests" ]; then
+    if [ -e "$tmp_clone_path/py_tests" ]; then
         install_tests
     else
         clone_nvmecli
-        if [ -e "nvme_tests/py_tests" ]; then
+        if [ -e "$tmp_clone_path/py_tests" ]; then
             install_tests
         else
             echo "** Fail to install nvme tests"
@@ -125,14 +128,14 @@ fi
 mp4_files=(small.mp4 medium.mp4 large.mp4)
 data_file_exist=1
 for df in ${mp4_files[@]}; do
-    if [ ! -e "/root/nvme/data/$df" ]; then
-        echo "** Data file $df not found in /root/nvme/data"
+    if [ ! -e "$nvme_tests_path/data/$df" ]; then
+        echo "** Data file $df not found in $nvme_tests_path/data"
         data_file_exist=0
     fi
 done
 if [ $data_file_exist -eq 0 ]; then
     echo "Please copy data files to /root/nvme/data"
-    exit 1
+    #exit 1
 else
     echo "[ok] data files check pass"
 fi
@@ -191,13 +194,13 @@ fi
 #----------------------------------------------------------------------------
 # check RSA keys
 #----------------------------------------------------------------------------
-rsa_key="AAAAB3NzaC1yc2EAAAABJQAAAQEA4m8n7VsLrGRvG/jUY06S4qvQA+HHMOPVpk5InKtt5CfCl65MZPxoKowqcQSg8psmy5+No+WYaduDNC8dot5SPIzFw4D3xa00/rg0OwkGPNlU+zQF2NmQjDEtf35gf3LtcHZlZ1pqmNQit/sVEZy24hpKNXGqes83/vi72fiXG+oLnHtEgZOBEoULQexfJwh3UFI6nXHCmB9BfKlGxlO8zkFfGIIcw/Yfbk96EWypnlmSRwjhq1Sv1jemq8xIfTK66SNuZ/MG/btd/ciu9MQPEs81E7gLqKRLBkWJ9gDv34hhYhUs99M3dNWgpaSCTESN9LQNz+TvkEly9WiWy2aTMw=="
-key_file="/root/.ssh/authorized_keys"
+rsa_key="AAAAB3NzaC1yc2EAAAADAQABAAABAQDB8oPOsAjMNZiFz25Fiqa2b31++DkxnYBvNDFKZcylO5KM5Mt45ALK2UzNmVXP/uqMgo1F5XUIMN36+OSFZoYKwFkrY4c+AMAUAs+vyHgkZQM4TCGfYveiuFsJluv7Nf9Wtxos44u9IZAhBAgrgWe87Ms0GiZ9VXuOLMa10WVwm46gVmonrml9xq0Ua2HnQ3jvAGFl6KxWnT5iAfJtiSZi7gxHffbimZOcTICB/dqn6YDfInErGO3uMSoLSIwk8S40doW72A0tKa3N712elJ5DFRBtA1omQCRtpFL68qxeVX4/d82edZ99dvIMkaKEI9YqG1KV9WgwqqPm0hyODDeH"
+key_file="$HOME/.ssh/authorized_keys"
 if [ ! -e $key_file ]; then
-    echo "** No authorized_keys file found in root/.ssh"
+    echo "** No authorized_keys file found in $HOME/.ssh"
     fix_or_exit
-    if [ ! -e "/root/.ssh" ]; then
-        mkdir -p /root/.ssh 
+    if [ ! -e "$HOME/.ssh" ]; then
+        mkdir -p $HOME/.ssh 
     fi
     echo "ssh-rsa $rsa_key" > $key_file
     echo "[ok] create authorized_keys file with valid rsa key"
