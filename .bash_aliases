@@ -1,5 +1,5 @@
 alias h='history'
-alias tmux2='tmux -2'
+alias tmux='tmux -2'
 
 function cdls() { cd "$*" && ls; }
 

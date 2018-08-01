@@ -11,23 +11,29 @@ cp .vimrc  $HOME
 cp .tmux.conf $HOME
 
 ##### VIM Settings ######
-if [ ! -d "~/.vim/bundle" ]; then
-    mkdir -p ~/.vim/bundle
+if [ ! -d "$HOME/.vim/bundle" ]; then
+    mkdir -p $HOME/.vim/bundle
 fi
-if [ ! -d "~/.vim/autoload" ]; then
-    mkdir -p ~/.vim/autoload
+if [ ! -d "$HOME/.vim/autoload" ]; then
+    mkdir -p $HOME/.vim/autoload
 fi
 
 # clone pathogen
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-if [ ! -f "~/.vim/autoload/pathogen.vim" ]; then
+if [ ! -f "$HOME/.vim/autoload/pathogen.vim" ]; then
+    echo "Downloading pathogen.vim..."
+    curl -LSso $HOME/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+fi
+if [ ! -f "$HOME/.vim/autoload/pathogen.vim" ]; then
     echo "[E] Failed to download pathogen.vim"
     exit 1
 fi
 
 # clone Vundle
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-if [ ! -d "~/.vim/bundle/Vundle.vim/autoload" ]; then
+if [ ! -d "$HOME/.vim/bundle/Vundle.vim/autoload" ]; then
+    echo "Downloading Vundle.vim..."
+    git clone https://github.com/VundleVim/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
+fi
+if [ ! -d "$HOME/.vim/bundle/Vundle.vim/autoload" ]; then
     echo "Failed to clone Vim Vundle"
     exit 1
 fi
