@@ -20,14 +20,14 @@ fi
 
 # clone pathogen
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-if [ ! -f "~/vim/autoload/pathogen.vim" ]; then
+if [ ! -f "~/.vim/autoload/pathogen.vim" ]; then
     echo "[E] Failed to download pathogen.vim"
     exit 1
 fi
 
 # clone Vundle
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-if [ ! -d "~/vim/bundle/Vundle.vim/autoload" ]; then
+if [ ! -d "~/.vim/bundle/Vundle.vim/autoload" ]; then
     echo "Failed to clone Vim Vundle"
     exit 1
 fi
