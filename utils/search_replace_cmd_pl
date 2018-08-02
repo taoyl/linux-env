@@ -1,0 +1,1 @@
+perl -pi.bak -ne 's/$_/# $_/g if /abc/' filename  

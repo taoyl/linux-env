@@ -1,0 +1,3 @@
+ls *.txt | perl -ne 'chomp;s/\.txt//g;rename "$_.txt",$_'
+ls *.ucdb | perl -ne 'chomp; $tmp=$_; s/\.ucdb$/_20111109.ucdb/g; rename $tmp,$_'
+
