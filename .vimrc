@@ -12,7 +12,7 @@ execute pathogen#infect()
  if has('win32')
      source $VIM/vimfiles/_vimrc_vundle
  else
-     source ~/.vim/.vimrc_vundle
+     source ~/.vim/vimrc_vundle
  endif
 
 
@@ -20,7 +20,7 @@ execute pathogen#infect()
 if has('win32')
     source $VIM/vimfiles/_vimrc_user_funcs
 else
-    source ~/.vim/.vimrc_user_funcs
+    source ~/.vim/vimrc_user_funcs
 endif
 
 
@@ -159,13 +159,13 @@ let g:indentLine_color_gui = '#cccccc'
 
 
 " ------------- syntastic ------------------- 
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
 
 
 
@@ -205,7 +205,7 @@ let Tlist_Use_Right_Window = 1 " Place the taglist window on the right side
 if has('win32')
     let Tlist_Ctags_Cmd = 'C:\taoyl\Development\bin\ctags.exe'
 else
-    let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+    let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 endif
 
 " ---------------- Tagbar ------------------- 
@@ -227,7 +227,7 @@ let g:tagbar_type_verilog_systemverilog= {
 if has('win32')
     let g:tagbar_ctags_bin = 'C:\taoyl\Development\bin\ctags.exe'
 else
-    let g:tagbar_ctags_bin = '/usr/bin/ctags'
+    let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
 endif
 nnoremap <silent> <F7> :TagbarToggle<CR>
 
