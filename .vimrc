@@ -196,7 +196,8 @@ let g:Powerline_cache_enabled = 0
 map <silent> <F6> :MBEToggle<CR>
 noremap <C-TAB>   :MBEbn<CR>
 noremap <C-S-TAB> :MBEbp<CR>
-let g:miniBufExplMapWindowNavVim = 1 
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplMapCTabSwitchBufs = 1
 
 
 " ------------- taglist --------------------- 
