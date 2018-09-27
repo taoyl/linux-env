@@ -7,6 +7,7 @@ function! DiffRemote()
     " Added at May 11, 2016
      
     "Toggle the flag (or set it if it doesn't yet exist)...
+    " Make diff_remote_open as a global variable
     let t:diff_remote_open = exists('t:diff_remote_open') ? !t:diff_remote_open : 0
 
     if !t:diff_remote_open
