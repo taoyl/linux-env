@@ -75,6 +75,7 @@ endfunction
 " Add headers for different file types
 autocmd BufNewFile *.v,*.sv,*.vpp,*.svh,*.vh exec ":call AddFileHeader(1, '/', '-')"
 autocmd BufNewFile *.sh,*.py,*.pl,*.tcl exec ":call AddFileHeader(0, '#', '*')"
+autocmd BufNewFile *.c,*.cpp,*.h,*.hpp exec ":call AddFileHeader(0, '/', '-')"
 
 
 function! ChangeLastModified()
@@ -89,5 +90,5 @@ function! ChangeLastModified()
         call setpos('.', save_cursor)
     endif
 endfunction
-autocmd BufWritePre *.v,*.sv,*.vpp,*.svh,*.vh,*.sh,*.py,*.pl,*.tcl 
+autocmd BufWritePre *.v,*.sv,*.vpp,*.svh,*.vh,*.sh,*.py,*.pl,*.tcl,*.c,*.cpp,*.h,*.hpp
             \ exec ":call ChangeLastModified()"
