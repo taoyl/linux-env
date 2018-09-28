@@ -35,10 +35,9 @@ function! AddFileHeader(company, prefix, ...)
     " Line length is fixed to 78
     
     let separator_line = repeat(a:prefix, 78)
-    let separator_prefix = a:prefix
+    let separator_prefix = repeat(a:prefix, 2)
     if a:0 == 1
         let separator_line = a:prefix.a:prefix.repeat(a:1, 76)
-        let separator_prefix = repeat(a:prefix, 2)
     endif
 
     let copyright_text = "COPYRIGHT (C)".strftime(" %Y ").$COMPANY_NAME
@@ -55,19 +54,40 @@ function! AddFileHeader(company, prefix, ...)
         call append(5,  separator_line)
         let curr_line_num = 5
     endif
-    call append(curr_line_num + 1 , separator_prefix." FILE          :  ".expand("%:t"))
-    call append(curr_line_num + 2 , separator_prefix." AUTHOR        :  ".$AUTHOR_NAME." (".$AUTHOR_EMAIL.")")
-    call append(curr_line_num + 3 , separator_prefix." CREATED AT    :  ".strftime("%H:%M:%S, %b %d, %Y"))
-    call append(curr_line_num + 4 , separator_prefix)
-    call append(curr_line_num + 5 , separator_line)
-    call append(curr_line_num + 6 , separator_prefix." DESCRIPTION   :  ADD DESCRIPTION HERE")
-    call append(curr_line_num + 7 , separator_prefix)
-    call append(curr_line_num + 8 , separator_line)
-    call append(curr_line_num + 9 , separator_prefix." CHANGE HISTORY:  v0.1 ".strftime("%Y-%m-%d")." | Initial creation.")    
-    call append(curr_line_num + 10, separator_prefix)
-    call append(curr_line_num + 11, separator_line)
+    call append(curr_line_num + 1 , separator_prefix." FILENAME      :  ".expand("%:t"))
+    call append(curr_line_num + 2 , separator_prefix." AUTHOR        :  ".
+                \ $AUTHOR_NAME." (".$AUTHOR_EMAIL.")")
+    call append(curr_line_num + 3 , separator_prefix." CREATED       :  ".
+                \ strftime("%c"))
+    call append(curr_line_num + 4 , separator_prefix." LAST MODIFIED :  ".
+                \ strftime("%c"))
+    call append(curr_line_num + 5 , separator_prefix)
+    call append(curr_line_num + 6 , separator_line)
+    call append(curr_line_num + 7 , separator_prefix." DESCRIPTION   :  ")
+    call append(curr_line_num + 8 , separator_prefix)
+    call append(curr_line_num + 9 , separator_line)
+    call append(curr_line_num + 10, separator_prefix." CHANGE HISTORY:  R0.1 ".
+                \ strftime("%Y-%m-%d")." | Initial creation.")    
+    call append(curr_line_num + 11, separator_prefix)
+    call append(curr_line_num + 12, separator_line)
     echohl WarningMsg | echo "File header added" | echohl none
 endfunction
 " Add headers for different file types
 autocmd BufNewFile *.v,*.sv,*.vpp,*.svh,*.vh exec ":call AddFileHeader(1, '/', '-')"
-autocmd BufNewFile *.sh,*.py,*.pl,*.tcl exec ":call AddFileHeader(0, '#')"
+autocmd BufNewFile *.sh,*.py,*.pl,*.tcl exec ":call AddFileHeader(0, '#', '*')"
+
+
+function! ChangeLastModified()
+    " Change the last modified time in file header (in 0-20 lines) when buffer
+    " is updated
+    if &modified
+        let save_cursor = getpos(".")
+        let n = min([20, line("$")])
+        keepjumps exe '1,' . n . 's#^\(.\{,5}LAST MODIFIED\s*:  \).*#\1'.
+                    \ strftime('%c') . '#e'
+        call histdel('search', -1)
+        call setpos('.', save_cursor)
+    endif
+endfunction
+autocmd BufWritePre *.v,*.sv,*.vpp,*.svh,*.vh,*.sh,*.py,*.pl,*.tcl 
+            \ exec ":call ChangeLastModified()"
