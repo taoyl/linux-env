@@ -1,3 +1,9 @@
+# Change CapsLock to Ctrl_R                                                                                                                                                                                                                   
+setxkbmap -layout us -option ctrl:nocaps                                                                                                                                                                                                   
+xmodmap -e 'clear Lock'                                                                                                                                                                                                                         
+xmodmap -e 'keycode 0x7e = Control_R'
+xmodmap -e 'add Control = Control_R'
+
 # Modify default prompt
 # Fontground: \e[38;5;COLOR_CODEm
 # Bold: \e[1m 
