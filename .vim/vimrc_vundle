@@ -71,6 +71,7 @@ Plugin 'godlygeek/csapprox'
 Plugin 'mhinz/vim-grepper'
 Plugin 'ConradIrwin/vim-bracketed-paste'
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'heavenshell/vim-pydocstring'
 
 " 2.plugins from http://vim-scripts.org/vim/scripts.html
 "Plugin 'Mark'
