@@ -292,7 +292,9 @@ nnoremap <leader>gr :Grepper -tool grep -switch -prompt<cr>
 
 
 " ---------------- colorscheme---------------
-if (has("termguicolors"))
+if (has("termguicolors"))    
+    let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+	   let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
     set termguicolors
 endif
 " For ayu colorscheme only 
