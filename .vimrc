@@ -312,7 +312,7 @@ let g:palenight_terminal_italics=1 "colorscheme: palenight
 " let g:nord_italic = 1 "colorscheme: nord
 
 " Config colorscheme: PaperColor, palenight, ayu, gruvbox, one, OceanicNext, 
-" solarized8, flattened_light, flattened_dark, nord
+" solarized8(_low/high/flat), flattened_light, flattened_dark, nord
 colorscheme palenight
 
 "Config lightline if you have lightline for status bar
