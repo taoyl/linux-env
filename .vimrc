@@ -292,10 +292,31 @@ nnoremap <leader>gr :Grepper -tool grep -switch -prompt<cr>
 
 
 " ---------------- colorscheme---------------
-" set background=light
+if (has("termguicolors"))
+    set termguicolors
+endif
+" For ayu colorscheme only 
+" let ayucolor="light"  " for light version of theme
+" let ayucolor="mirage" " for mirage version of theme
+" let ayucolor="dark"   " for dark version of theme
+" Other colorschemes just use set background=dark/light
 set background=dark
-colorscheme PaperColor
-" colorscheme solarized
+
+" italic for comments, the following colorscheme support: 
+let g:palenight_terminal_italics=1 "colorscheme: palenight
+" let g:one_allow_italics = 1 "colorscheme: one
+" let g:oceanic_next_terminal_italic = 1 "colorscheme: OceanicNext
+" let g:solarized_term_italics = 1 "colorscheme: solarized8
+" let g:nord_italic = 1 "colorscheme: nord
+
+" Config colorscheme: PaperColor, palenight, ayu, gruvbox, one, OceanicNext, 
+" solarized8, flattened_light, flattened_dark, nord
+colorscheme palenight
+
+"Config lightline if you have lightline for status bar
+"let g:lightline.colorscheme = 'palenight'
+"Config airline if you have airline for status bar
+"let g:airline_theme='oceanicnext'
 
 "" These settings must be put afer colorscheme
 " for solarized
