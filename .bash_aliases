@@ -78,3 +78,6 @@ alias fixperm="fixperm_recur"
 
 alias myrc="vim ~/.mybashrc && source ~/.mybashrc"
 alias reload="source ~/.bashrc"
+
+# source utils
+source ~/utils/tmux_scripts
