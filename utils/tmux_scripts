@@ -1,6 +1,7 @@
 #!/bin/bash -f
 # Function to simplify using tmux
 # source: https://github.com/kshenoy/dotfiles/blob/master/tmux/tmux_scripts
+# usage: source this file in .bashrc, run 'tmux_pp option CMDs'
 
 unset -f _tmux_attach_or_new_
 _tmux_attach_or_new_() {                                                                                          # {{{1
