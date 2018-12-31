@@ -1,0 +1,18 @@
+# Change CapsLock to Ctrl_R 
+setxkbmap -layout us -option ctrl:nocaps
+xmodmap -e 'clear Lock'
+xmodmap -e 'keycode 0x7e = Control_R'
+xmodmap -e 'add Control = Control_R'
+
+# Modify default prompt
+# Fontground: \e[38;5;COLOR_CODEm
+# Bold: \e[1m 
+# Reset: \e[0m
+PS1="[\u@\h \e[1m\e[38;5;245m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "
+
+# Change environment variables
+PATH="~/bin/scripts:~/bin:${PATH}"
+export LD_LIBRARY_PATH="$HOME/bin/libs/:$LD_LIBRARY_PATH"
+
+# source alias
+source ~/.user_alias
