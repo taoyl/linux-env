@@ -1,9 +1,8 @@
-#!/bin/bash
 ##****************************************************************************
 ## File Name     :  bkill_pro.sh
 ## Author        :  yuliang.tao (yuliang.tao@bitmain.com)
 ## Created At    :  Tue 08 Jan 2019 10:12:02 PM CST
-## Last Modified :  Thu 10 Jan 2019 01:41:36 PM CST
+## Last Modified :  Fri 18 Jan 2019 11:51:05 AM CST
 ##
 ##****************************************************************************
 ## Description   : Util for kill jobs.
@@ -21,18 +20,32 @@
 # JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
 # 1136448 yuliang RUN   normal     etx-end2    cm090       *81952.log Jan  8 18:19
 
+ask_and_execute() {
+    echo
+    if [ "$1" != "" ]; then
+        echo "$*"
+        read -p "Killing all these jobs (Y/N)? " ans
+        if [ "$ans" == "Y" ]; then
+            echo "$ans"
+            bkill $1
+        fi
+    fi
+    exit 0
+}
+
+#-----------------------------------------------------------------------------
+# Kill all jobs
+#-----------------------------------------------------------------------------
 if [ "$1" == "-a" ]; then
     all_jobs=$(bjobs | /bin/grep '^[0-9]\+')
     all_job_ids=$(bjobs | /bin/grep '^[0-9]\+' | awk '{print $1}')
     echo "$all_jobs"
-    read -p "Killing all jobs (Y/N)? " ans
-    if [ "$ans" == "Y" ]; then
-        echo $all_job_ids
-        bkill $all_job_ids
-    fi
-    exit 0
+    ask_and_execute $all_job_ids
 fi
 
+#-----------------------------------------------------------------------------
+# Kill jobs the start time of which is before or after a specific time
+#-----------------------------------------------------------------------------
 if [[ "$1" == "-bt" || "$1" == "-at" ]]; then
     # $2 format is same as the output of bjobs
     till_time=$(echo $2 | awk '{print $2 " " $3}' | sed 's/:/ /')
@@ -58,15 +71,27 @@ if [[ "$1" == "-bt" || "$1" == "-at" ]]; then
             echo "$job"
         fi
     done < <(bjobs | /bin/grep '^[0-9]\+')
-            
-    echo
-    if [ "$to_be_killed_job_ids" != "" ]; then
-        echo "$to_be_killed_job_ids"
-        read -p "Killing all these jobs (Y/N)? " ans
-        if [ "$ans" == "Y" ]; then
-            echo "$ans"
-            bkill $to_be_killed_job_ids
+
+    ask_and_execute $to_be_killed_job_ids
+
+fi
+
+#-----------------------------------------------------------------------------
+# Kill jobs on a sepecific queue
+#-----------------------------------------------------------------------------
+if [ "$1" == "-q" ]; then
+    qname_for_kill=$2
+    to_be_killed_job_ids=""
+
+    while read -r job; do
+        qname=$(echo $job | awk '{print $4}')
+
+        if [ "$qname" == "$qname_for_kill" ]; then
+            curr_jid=$(echo $job | awk '{print $1}')
+            to_be_killed_job_ids="$to_be_killed_job_ids $curr_jid"
+            echo "$job"
         fi
-    fi
-    exit 0
+    done < <(bjobs | /bin/grep '^[0-9]\+')
+
+    ask_and_execute $to_be_killed_job_ids
 fi
