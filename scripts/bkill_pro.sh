@@ -27,7 +27,7 @@ ask_and_execute() {
         read -p "Killing all these jobs (Y/N)? " ans
         if [ "$ans" == "Y" ]; then
             echo "$ans"
-            bkill $1
+            bkill $*
         fi
     fi
     exit 0
