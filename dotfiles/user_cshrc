@@ -1,0 +1,20 @@
+# Colors!
+# %{...%} means the stuff between should take 0-width
+set prompt_color   = "%{\e[38;5;172m%}"
+set cwd_color      = "%{\e[38;5;240m%}"
+set cmdindex_color = "%{\e[1m\e[38;5;172m%}"
+set bold           = "%{\e[1m%}"
+set reset_code     = "%{\e[0m%}" # This is needed at the end... :(
+
+## Set autolist # tab auto list file
+set autolist = ambiguous # tab auto list file
+
+## Set the prompt format
+# set prompt = "\[${prompt_color}`whoami`${groupname}@`hostname`${reset_code} ${cwd_color}$PWD${reset_code}\]\n\[${cmdindex_color}\!${reset_code}\] tcsh ${bold}"'$'"${reset_code} "
+# alias cd 'cd \!* ; ls; pwd'
+set groupname = "("`id | cut -f3 -d'(' | cut -f1 -d')'`")"
+set prompt_prefix = "\[${prompt_color}`whoami`${groupname}@`hostname`${reset_code} "
+set prompt_suffix = "\]\n\[${cmdindex_color}\!${reset_code}\] tcsh ${bold}"'$'"${reset_code} "
+alias cd 'cd \!* ; ls; pwd; set prompt="${prompt_prefix}${cwd_color}$cwd${reset_code}${prompt_suffix}"'
+
+alias h history
