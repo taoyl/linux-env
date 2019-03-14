@@ -8,7 +8,15 @@ xmodmap -e 'add Control = Control_R'
 # Fontground: \e[38;5;COLOR_CODEm
 # Bold: \e[1m 
 # Reset: \e[0m
-PS1="[\u@\h \e[1m\e[38;5;245m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "
+prompt_color="\e[38;5;172m"
+cwd_color="\e[38;5;240m"
+cmdindex_color="\e[1m\e[38;5;172m"
+bold="\e[1m"
+reset_code="\e[0m" # This is needed at the end... :(
+
+# PS1="[\e[38;5;172m\u@\h\e[0m \e[1m\e[38;5;245m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "  # for custom tmux apperance
+# PS1="[\e[38;5;172m\u@\h\e[0m \e[38;5;240m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "  # for solarized tmux
+PS1="[$prompt_color\u@\h$reset_code $cwd_color\w$reset_code]\\n[$cmdindex_color\!$reset_code] bash $bold\\$\e[0m "  # for solarized tmux
 
 # Change environment variables
 PATH="~/bin/scripts:~/bin:${PATH}"
