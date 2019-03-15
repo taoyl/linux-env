@@ -140,6 +140,75 @@ endfunction
 " }}}
 
 
+" function! AddBashArgParse {{{
+function! AddBashArgParse()
+    " Add bash arg parse code automatically
+    
+    let curr_ft = &filetype
+
+    if curr_ft != 'sh'
+        echohl WarningMsg | echo "Not sh file" | echohl none
+        return
+    endif
+
+    let curr_lineno = line('.')
+    call append(curr_lineno+0 , '# Parse command-line args')
+    call append(curr_lineno+1 , 'POSITIONAL=()')
+    call append(curr_lineno+2 , 'while [[ $# -gt 0 ]]; do')
+    call append(curr_lineno+3 , '    key="$1"')
+    call append(curr_lineno+4 , '    case $key in')
+    call append(curr_lineno+5 , '        -f|--file)')
+    call append(curr_lineno+6 , '            FILE="$2"')
+    call append(curr_lineno+7 , '            shift # past argument')
+    call append(curr_lineno+8 , '            shift # past value')
+    call append(curr_lineno+9 , '            ;;')
+    call append(curr_lineno+10, '        *)    # unknown option')
+    call append(curr_lineno+11, '            POSITIONAL+=("$1") # save it in an array for later')
+    call append(curr_lineno+12, '            shift # past argument')
+    call append(curr_lineno+13, '            ;;')
+    call append(curr_lineno+14, '    esac')
+    call append(curr_lineno+15, 'done')
+    call append(curr_lineno+16, 'set -- "${POSITIONAL[@]}" # restore positional parameters')
+    call append(curr_lineno+17, '')
+    call append(curr_lineno+18, 'echo FILE  = "${FILE}"')
+    call append(curr_lineno+19, 'echo Unknown args: "${POSITIONAL[*]}"')
+endfunction
+" }}}
+    
+
+" function! AddPythonArgParse {{{
+function! AddPythonArgParse()
+    " Add python arg parse code automatically
+    
+    let curr_ft = &filetype
+
+    if curr_ft != 'python'
+        echohl WarningMsg | echo "Not python file" | echohl none
+        return
+    endif
+
+    let curr_lineno = line('.')
+    call append(curr_lineno+0 , 'import argparse')
+    call append(curr_lineno+1 , '')
+    call append(curr_lineno+2 , '')
+    call append(curr_lineno+3 , 'def parse_cli_args():')
+    call append(curr_lineno+4 , '    """Parse command-line args"""')
+    call append(curr_lineno+5 , '')
+    call append(curr_lineno+6 , "    parser = argparse.ArgumentParser(description='Add your descriptions')")
+    call append(curr_lineno+7 , "    parser.add_argument('-f', '--file', type=str, required=True,")
+    call append(curr_lineno+8 , "            help='Add help info')")
+    call append(curr_lineno+9 , "    parser.add_argument('-s', '--sort', action='store_true', default=False,")
+    call append(curr_lineno+10, "            help='Add help info')")
+    call append(curr_lineno+11, "    parser.add_argument('--bypass', nargs='*', type=str,")
+    call append(curr_lineno+12, "            help='Add help info')")
+    call append(curr_lineno+13, "    args = parser.parse_args()")
+    call append(curr_lineno+14, "    print('file={}, sort={}, bypass={}'.format(args.file, args.sort, args.bypass))")
+    call append(curr_lineno+15, '')
+endfunction
+" }}}
+
+
+
 "-----------------------------------------------------------------------------
 " Custom Command & autocmd
 "-----------------------------------------------------------------------------
