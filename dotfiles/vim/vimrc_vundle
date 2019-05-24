@@ -85,6 +85,7 @@ Plugin 'ConradIrwin/vim-bracketed-paste'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'heavenshell/vim-pydocstring'
 Plugin 'guns/xterm-color-table.vim'
+Plugin 'chrisbra/csv.vim'
 
 " 2.plugins from http://vim-scripts.org/vim/scripts.html
 "Plugin 'Mark'
