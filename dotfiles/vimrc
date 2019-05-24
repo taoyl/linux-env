@@ -181,8 +181,9 @@ let g:ctrlp_working_path_mode = 'ra'
 
 " ------------- Powerline ------------------- 
 set laststatus=2   " Always show the statusline
+"let g:Powerline_symbols = 'fancy'
 "display full filename. Use short to display a short path
-let g:Powerline_stl_path_style = 'full'
+let g:Powerline_stl_path_style = 'short'
 let g:Powerline_cache_enabled = 0
 " let g:Powerline_dividers_override = ['>>', '>', '<<', '<']
 
