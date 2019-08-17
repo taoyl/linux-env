@@ -87,6 +87,9 @@ Plugin 'heavenshell/vim-pydocstring'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'chrisbra/csv.vim'
 
+" UPF
+Plugin 'vim-scripts/upf.vim'
+
 " 2.plugins from http://vim-scripts.org/vim/scripts.html
 "Plugin 'Mark'
 Plugin 'commentary.vim'
