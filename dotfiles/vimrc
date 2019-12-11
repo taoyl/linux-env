@@ -254,6 +254,17 @@ let g:neocomplete#enable_smart_case = 1
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
+" ------------- rainbow ------------------
+":RainbowToggle --you can use it to toggle this plugin.
+":RainbowLoad   --you can use it to load/reload this plugin.
+let g:rainbow_active = 1
+let g:rainbow_load_separately = [
+    \ [ '*.tcl' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+    \ [ '*.{.v,sv,vpp}' , [['(', ')'], ['{', '}'], ['begin', 'end']] ],
+    \ ]
+"let g:rainbow_guifgs = ['RoyalBlue3', 'DarkOrange3', 'DarkOrchid3', 'FireBrick']
+"let g:rainbow_ctermfgs = ['lightblue', 'lightgreen', 'yellow', 'red', 'magenta']
+
 
 " ------------- easymotion ------------------ 
 " <Leader>f{char} to move to {char}
