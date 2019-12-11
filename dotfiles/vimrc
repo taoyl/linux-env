@@ -166,6 +166,18 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
+" config checkers
+let g:syntastic_c_checkers = ['gcc']
+let g:syntastic_cpp_checkers = ['gcc']
+let g:syntastic_verilog_checkers = ['iverilog']
+" suppress verilog files (*.v, *.sv) errors
+let g:syntastic_quiet_messages = {
+    \ "regex":  ['\mUnknown module',
+    \            '\mmacro.*undefined',
+    \            '\mInclude.*not found'
+    \           ],
+    \ "file:e": ['v', 'sv']
+    \ }
 nnoremap <leader>] :lnext<CR>
 nnoremap <leader>[ :lprev<CR>
 
