@@ -175,8 +175,7 @@ let g:syntastic_quiet_messages = {
     \ "regex":  ['\mUnknown module',
     \            '\mmacro.*undefined',
     \            '\mInclude.*not found'
-    \           ],
-    \ "file:e": ['v', 'sv']
+    \           ]
     \ }
 nnoremap <leader>] :lnext<CR>
 nnoremap <leader>[ :lprev<CR>
