@@ -86,6 +86,7 @@ Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'heavenshell/vim-pydocstring'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'chrisbra/csv.vim'
+Plugin 'frazrepo/vim-rainbow'
 
 " UPF
 Plugin 'vim-scripts/upf.vim'
