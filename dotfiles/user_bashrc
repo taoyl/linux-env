@@ -24,3 +24,17 @@ export LD_LIBRARY_PATH="$HOME/bin/libs/:$LD_LIBRARY_PATH"
 
 # source alias
 source ~/.user_alias
+
+# source some utils
+source ~/Utils/scripts/tmux_scripts
+
+# powerline
+# powerline config file needs the following env var
+export CURR_SHELL="$(ps -p $$ | awk 'NR==2 {print $NF}')"
+if [ -f `which powerline-daemon` ]; then
+    powerline-daemon -q
+    POWERLINE_BASH_CONTINUATION=1
+    POWERLINE_BASH_SELECT=1
+    . $HOME/Utils/powerline/powerline/bindings/bash/powerline.sh
+fi
+
