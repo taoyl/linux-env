@@ -18,3 +18,10 @@ set prompt_suffix = "\]\n\[${cmdindex_color}\!${reset_code}\] tcsh ${bold}"'$'"$
 alias cd 'cd \!* ; ls; pwd; set prompt="${prompt_prefix}${cwd_color}$cwd${reset_code}${prompt_suffix}"'
 
 alias h history
+
+# powerline
+# powerline config file needs the following env var
+setenv CURR_SHELL `ps -p $$ | awk 'NR==2 {print $4}'`
+if ( "`which powerline-daemon`" != "" ) then
+    source /home/yuliang.tao/Utils/powerline/powerline/bindings/tcsh/powerline.tcsh
+endif
