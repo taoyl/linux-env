@@ -6,6 +6,15 @@ set nocompatible
 " ------------- pathogen ------------------ 
 execute pathogen#infect()
 
+
+" set the runtime path to include Vundle and powerline-status
+if has("win32")
+    set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
+else
+    set rtp+=~/.vim/bundle/Vundle.vim
+    set rtp+=/Users/taoyl/.local/lib/python3.6/site-packages/powerline/bindings/vim
+endif
+
 " ------------- vundle -------------------- 
 " Comment the following lines once all plugins are ready, 
 " else cannot detect filetype verilog_systemverilog 
@@ -22,6 +31,7 @@ if has('win32')
 else
     source ~/.vim/vimrc_user_funcs
 endif
+
 
 
 " ------------- General ------------------- 
@@ -191,11 +201,12 @@ let g:ctrlp_working_path_mode = 'ra'
 
 
 " ------------- Powerline ------------------- 
+" Powerline is replaced by powerline-status
 set laststatus=2   " Always show the statusline
 "let g:Powerline_symbols = 'fancy'
 "display full filename. Use short to display a short path
-let g:Powerline_stl_path_style = 'short'
-let g:Powerline_cache_enabled = 0
+" let g:Powerline_stl_path_style = 'short'
+" let g:Powerline_cache_enabled = 0
 " let g:Powerline_dividers_override = ['>>', '>', '<<', '<']
 
 

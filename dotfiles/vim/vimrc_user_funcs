@@ -39,7 +39,7 @@ function! AddFileHeader(company, prefix, ...)
     " AUTHOR_EMAIL enviroment variables.
     " Line length is fixed to 78
     
-    let separator_line = repeat(a:prefix, 78)
+    let separator_line = repeat(a:prefix, 100)
     let separator_prefix = repeat(a:prefix, 2)
 
     " a:0 is the number of optional args

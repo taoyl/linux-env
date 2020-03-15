@@ -8,12 +8,6 @@ endif
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
-if has("win32")
-    set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
-else
-    set rtp+=~/.vim/bundle/Vundle.vim
-endif
 
 " start vundle
 " alternatively, pass a path where Vundle should install plugins
@@ -65,7 +59,8 @@ Plugin 'kana/vim-textobj-indent'
 Plugin 'kana/vim-textobj-underscore'
 Plugin 'kana/vim-textobj-lastpat'
 Plugin 'kana/vim-textobj-line'
-Plugin 'Lokaltog/vim-powerline'
+" use powerline-status to replace vim-powerline
+" Plugin 'Lokaltog/vim-powerline'
 " use lightline to replace vim-powerline
 "Plugin 'itchyny/lightline.vim'
 Plugin 'fholgado/minibufexpl.vim'
@@ -90,6 +85,9 @@ Plugin 'frazrepo/vim-rainbow'
 
 " UPF
 Plugin 'vim-scripts/upf.vim'
+
+" vlog auto inst
+Plugin 'taoyl/vim-vlogautoinst'
 
 " 2.plugins from http://vim-scripts.org/vim/scripts.html
 "Plugin 'Mark'
