@@ -11,8 +11,8 @@ execute pathogen#infect()
 if has("win32")
     set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
 else
-    set rtp+=~/.vim/bundle/Vundle.vim
-    set rtp+=/Users/taoyl/.local/lib/python3.6/site-packages/powerline/bindings/vim
+    set rtp+=$HOME/.vim/bundle/Vundle.vim
+    set rtp+=$HOME/.local/lib/python3.6/site-packages/powerline/bindings/vim
 endif
 
 " ------------- vundle -------------------- 
