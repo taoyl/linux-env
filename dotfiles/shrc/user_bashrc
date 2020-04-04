@@ -1,0 +1,100 @@
+# rc file for bash and zsh
+# Yuliang Tao
+
+#--------------------------------------------------------------------------------------------------
+# Utils
+#--------------------------------------------------------------------------------------------------
+if [[ -e $HOME/utils/shrc/bash_utils ]]; then
+    source $HOME/utils/shrc/bash_utils
+fi
+
+
+#--------------------------------------------------------------------------------------------------
+# ENV variable
+#--------------------------------------------------------------------------------------------------
+# common env variables
+while read -r v; do
+    name=$(/usr/bin/cut -d'=' -f1 <<< $v)      
+    cmd=$(/usr/bin/cut -d'=' -f2- <<< $v) 
+    if [[ "$name" == "PATH" ]]; then
+        eval PATH="$cmd"
+    else
+        eval export $name="$cmd"
+    fi
+done < <(/usr/bin/grep -v '^#' $HOME/utils/shrc/env)
+# bash/zsh specific env variables go here
+export CURR_SHELL=$(/bin/ps -p $$ | /usr/bin/awk 'NR==2 {print $NF}' | /usr/bin/sed 's/^-//')
+
+
+#--------------------------------------------------------------------------------------------------
+# Aliases
+#--------------------------------------------------------------------------------------------------
+# common alias
+while read -r a; do
+    name=$(/usr/bin/cut -d'=' -f1 <<< $a)
+    cmd=$(/usr/bin/cut -d'=' -f2- <<< $a)
+    alias $name="$cmd" 
+done < <(/usr/bin/grep -v '^#' $HOME/utils/shrc/alias)
+# bash/zsh specific alias go here
+alias cd="cdls"
+alias mktar="createtar"
+alias mktgz="createtgz"
+alias mktbz="createtbz"
+alias extract="extractfile"
+alias fixperm="fixperm_recur"
+if [[ "$CURR_SHELL" == "bash" ]]; then
+    alias reloadrc="source $HOME/.bashrc"
+else
+    alias reloadrc="source $HOME/.zshrc"
+fi
+if [[ "$(/usr/bin/uname)" == "Darwin" ]]; then
+    alias ls='ls -G'
+else
+    alias ls='ls --color'
+fi
+
+
+#--------------------------------------------------------------------------------------------------
+# Keyboard Remapping
+#--------------------------------------------------------------------------------------------------
+# Map CapsLock to Ctrl_R if not in MacOSX
+if [[ "$(/usr/bin/uname)" != "Darwin" ]]; then
+    setxkbmap -layout us -option ctrl:nocaps
+    xmodmap -e 'clear Lock'
+    xmodmap -e 'keycode 0x7e = Control_R'
+    xmodmap -e 'add Control = Control_R'
+fi
+
+
+#--------------------------------------------------------------------------------------------------
+# Prompt Settings
+#--------------------------------------------------------------------------------------------------
+# If powerline is installed, use powerline for prompt, else use user-settings
+if [[ -f `which powerline-daemon` ]]; then
+    powerline-daemon -q
+    # User can set POWERLINE_LOCATION in env file if powerline is not installed by pip3
+    if [[ "$POWERLINE_LOCATION" == "" ]]; then
+        export POWERLINE_LOCATION=$(pip3 show powerline-status | /usr/bin/grep Location | /usr/bin/awk '{print $NF}')/powerline
+    fi
+    if [[ "$CURR_SHELL" == "bash" ]]; then
+        POWERLINE_BASH_CONTINUATION=1
+        POWERLINE_BASH_SELECT=1
+        . $POWERLINE_LOCATION/bindings/bash/powerline.sh
+    else
+        . $POWERLINE_LOCATION/bindings/zsh/powerline.zsh
+    fi
+else
+    # Modify default prompt
+    # Fontground: \e[38;5;COLOR_CODEm
+    # Bold: \e[1m 
+    # Reset: \e[0m
+    prompt_color="\e[38;5;172m"
+    cwd_color="\e[38;5;240m"
+    cmdindex_color="\e[1m\e[38;5;172m"
+    bold="\e[1m"
+    reset_code="\e[0m" # This is needed at the end... :(
+
+    # PS1="[\e[38;5;172m\u@\h\e[0m \e[1m\e[38;5;245m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "  # for custom tmux apperance
+    # PS1="[\e[38;5;172m\u@\h\e[0m \e[38;5;240m\w\e[0m]\\n[\e[1m\e[38;5;172m\!\e[0m] \e[1m\\$\e[0m "  # for solarized tmux
+    PS1="[$prompt_color\u@\h$reset_code $cwd_color\w$reset_code]\\n[$cmdindex_color\!$reset_code] $CURR_SHELL $bold\\$\e[0m "  # for solarized tmux
+fi

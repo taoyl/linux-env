@@ -3,7 +3,9 @@
 # source: https://github.com/kshenoy/dotfiles/blob/master/tmux/tmux_scripts
 # usage: source this file in .bashrc, run 'tmux_pp option CMDs'
 
-unset -f _tmux_attach_or_new_
+if [[ -v _tmux_attach_or_new_ ]]; then
+    unset -f _tmux_attach_or_new_
+fi
 _tmux_attach_or_new_() {                                                                                          # {{{1
   # Attach to existing session or else create a new one
   if [[ ! -z "$TMUX" ]]; then return; fi
@@ -25,7 +27,9 @@ _tmux_attach_or_new_() {                                                        
   fi
 }
 
-unset -f _tmux_update_env_
+if [[ -v _tmux_update_env_ ]]; then
+    unset -f _tmux_update_env_
+fi
 _tmux_update_env_() {                                                                                             # {{{1
   # Update environment variables in TMUX
   # https://raim.codingfarm.de/blog/2013/01/30/tmux-update-environment/
@@ -45,7 +49,9 @@ _tmux_update_env_() {                                                           
   echo "...done"
 }
 
-unset -f _tmux_send_keys_other_panes_
+if [[ -v _tmux_send_keys_other_panes_ ]]; then
+    unset -f _tmux_send_keys_other_panes_
+fi
 _tmux_send_keys_other_panes_() {                                                                                  # {{{1
   local _pane_current=$(tmux display-message -p '#P')
   for _pane in $(tmux list-panes -F '#P'); do
@@ -55,14 +61,18 @@ _tmux_send_keys_other_panes_() {                                                
   done
 }
 
-unset -f _tmux_send_keys_all_panes_
+if [[ -v _tmux_send_keys_all_panes_ ]]; then
+    unset -f _tmux_send_keys_all_panes_
+fi
 _tmux_send_keys_all_panes_() {                                                                                    # {{{1
   for _pane in $(tmux list-panes -F '#P'); do
     tmux send-keys -t ${_pane} "$@"
   done
 }
 
-unset -f _tmux_send_keys_all_
+if [[ -v _tmux_send_keys_all_ ]]; then
+    unset -f _tmux_send_keys_all_
+fi
 _tmux_send_keys_all_() {                                                                                          # {{{1
   for _window in $(tmux list-windows -F '#I'); do
     for _pane in $(tmux list-panes -t ${_window} -F '#P'); do
@@ -71,7 +81,9 @@ _tmux_send_keys_all_() {                                                        
   done
 }
 
-unset -f _tmux_select_session_
+if [[ -v _tmux_select_session_ ]]; then
+    unset -f _tmux_select_session_
+fi
 _tmux_select_session_() {                                                                                         # {{{1
   tmux list-sessions | awk -F: '{ print $1 " \"" $2 "\""; }' |\
     xargs dialog --ok-label 'Attach' --cancel-label 'New session' --menu tmux 20 80 20 2>/tmp/tmux-session \
@@ -80,7 +92,9 @@ _tmux_select_session_() {                                                       
 }
 
 
-unset -f tmux_pp
+if [[ -v tmux_pp ]]; then
+    unset -f tmux_pp
+fi
 tmux_pp() {                                                                                                       # {{{1
   # We can't make the helper functions private because doing so will run tmux_pp in a subshell
   # However, since we can't export variables from a subshell to its parent shell, tmux_update_env won't work

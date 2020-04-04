@@ -47,60 +47,86 @@ Plugin 'Yggdroot/indentLine'
 Plugin 'Raimondi/delimitMate'
 " Plugin 'scrooloose/syntastic'
 Plugin 'vim-syntastic/syntastic'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'Shougo/unite.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'will133/vim-dirdiff'
 Plugin 'Shougo/neocomplete.vim'  " Not supported without +lua
 Plugin 'kshenoy/vim-signature'
+
+" Text obj for % jump
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-entire'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'kana/vim-textobj-underscore'
 Plugin 'kana/vim-textobj-lastpat'
 Plugin 'kana/vim-textobj-line'
-" use powerline-status to replace vim-powerline
+
+" Status line
+" use powerline-status to replace vim-powerline or lightline
 " Plugin 'Lokaltog/vim-powerline'
-" use lightline to replace vim-powerline
 "Plugin 'itchyny/lightline.vim'
-Plugin 'fholgado/minibufexpl.vim'
-Plugin 'tpope/vim-abolish'
+" No need minbuf because we have powerline
+" Plugin 'fholgado/minibufexpl.vim'
+
+" Incremental search and easymotion
 Plugin 'easymotion/vim-easymotion'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/incsearch-easymotion.vim'
+
 Plugin 'majutsushi/tagbar'
+Plugin 'tpope/vim-abolish'
+
 " The following four are for snipMate
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'godlygeek/csapprox'
-Plugin 'mhinz/vim-grepper'
 Plugin 'ConradIrwin/vim-bracketed-paste'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'heavenshell/vim-pydocstring'
 Plugin 'guns/xterm-color-table.vim'
-Plugin 'chrisbra/csv.vim'
+
+" colorful paired signs, e.g. braces, parenthsis, etc
 Plugin 'frazrepo/vim-rainbow'
 
-" UPF
-Plugin 'vim-scripts/upf.vim'
+" Python related
+Plugin 'heavenshell/vim-pydocstring'
 
-" vlog auto inst
+" Syntax for specific file typpe
+Plugin 'chrisbra/csv.vim'
+
+" IC related
+Plugin 'verilog_systemverilog.vim'
+Plugin 'vim-scripts/upf.vim'
 Plugin 'taoyl/vim-vlogautoinst'
 
-" 2.plugins from http://vim-scripts.org/vim/scripts.html
-"Plugin 'Mark'
+" grep & search
+" Plugin 'mhinz/vim-grepper'  "replaced by fzf
+" Plugin 'ctrlpvim/ctrlp.vim' "replaced by fzf
+Plugin 'junegunn/fzf.vim'
+
+" Auto comment
 Plugin 'commentary.vim'
+
+" Add/remove surround like braces etc.
 Plugin 'surround.vim'
-Plugin 'verilog_systemverilog.vim'
+
+" Marker
 Plugin 'Mark'
 Plugin 'Visual-Mark'
+
+" Drawing
 Plugin 'DrawIt'
+
+" Taglist
 Plugin 'taglist.vim'
 Plugin 'matchit.zip'
+
+" Vim session
 Plugin 'sessions.vim'
 
+" 2.plugins from http://vim-scripts.org/vim/scripts.html
+" Plugin 'sessions.vim'
 
 " 3.Git plugin not hosted on GitHub
 "Plugin 'git://git.wincent.com/command-t.git'

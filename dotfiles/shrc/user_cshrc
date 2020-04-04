@@ -1,0 +1,92 @@
+# rc file for csh
+# Yuliang Tao
+
+#--------------------------------------------------------------------------------------------------
+# Utils
+#--------------------------------------------------------------------------------------------------
+if (-e $HOME/utils/shrc/csh_utils) then
+    source $HOME/utils/shrc/csh_utils
+endif
+
+
+#--------------------------------------------------------------------------------------------------
+# ENV variable
+#--------------------------------------------------------------------------------------------------
+# Add the following to suppress LD_LIBRARY_PATH not defined warning
+if ( ! $?LD_LIBRARY_PATH ) then
+   setenv LD_LIBRARY_PATH ""
+endif
+# common env variables
+foreach v ("`/usr/bin/grep -v '^#' $HOME/utils/shrc/env`")
+    set name = `echo $v | /usr/bin/cut -d'=' -f1` 
+    set cmd = `echo $v | /usr/bin/cut -d'=' -f2-`
+    if ( "$name" == "PATH" ) then
+        eval set PATH = "$cmd"
+    else
+        eval setenv $name "$cmd"
+    endif
+end
+# tcsh specific env variables go here
+set autolist = ambiguous # tab auto list file
+setenv CURR_SHELL `ps -p $$ | /usr/bin/awk 'NR==2 {print $NF}' | /usr/bin/sed 's/^-//'`
+
+
+#--------------------------------------------------------------------------------------------------
+# Aliases
+#--------------------------------------------------------------------------------------------------
+# common alias
+foreach a ("`/usr/bin/grep -v '^#' $HOME/utils/shrc/alias`")
+    set name = `echo $a | /usr/bin/cut -d'=' -f1`
+    set cmd = `echo $a | /usr/bin/cut -d'=' -f2-`
+    alias $name $cmd
+end
+# tcsh specific alias go here
+alias reloadrc "source $HOME/.cshrc"
+if ( "`/usr/bin/uname`" == "Darwin" ) then
+    alias ls 'ls -G'
+else
+    alias ls 'ls --color'
+endif
+
+
+#--------------------------------------------------------------------------------------------------
+# Keyboard Remapping
+#--------------------------------------------------------------------------------------------------
+# Map CapsLock to Ctrl_R if not in MacOSX
+if ( "`/usr/bin/uname`" != "Darwin" ) then
+    setxkbmap -layout us -option ctrl:nocaps
+    xmodmap -e 'clear Lock'
+    xmodmap -e 'keycode 0x7e = Control_R'
+    xmodmap -e 'add Control = Control_R'
+endif
+
+
+#--------------------------------------------------------------------------------------------------
+# Prompt Settings
+#--------------------------------------------------------------------------------------------------
+# If powerline is installed, use powerline for prompt, else use user-settings
+if ( "`which powerline-daemon`" != "" ) then
+    # User can set POWERLINE_LOCATION in env file if powerline is not installed by pip3
+    if ( "$POWERLINE_LOCATION" == "" ) then
+        setenv POWERLINE_LOCATION "`pip3 show powerline-status | /usr/bin/grep Location | awk '{print $NF}'`/powerline"
+    endif
+    source $POWERLINE_LOCATION/bindings/tcsh/powerline.tcsh
+else
+    # Modify default prompt
+    # Colors settings
+    # %{...%} means the stuff between should take 0-width
+    set prompt_color   = "%{\e[38;5;172m%}"
+    set cwd_color      = "%{\e[38;5;240m%}"
+    set cmdindex_color = "%{\e[1m\e[38;5;172m%}"
+    set bold           = "%{\e[1m%}"
+    set reset_code     = "%{\e[0m%}" # This is needed at the end... :(
+    
+    
+    ## Set the prompt format
+    # set prompt = "\[${prompt_color}`whoami`${groupname}@`hostname`${reset_code} ${cwd_color}$PWD${reset_code}\]\n\[${cmdindex_color}\!${reset_code}\] tcsh ${bold}"'$'"${reset_code} "
+    # alias cd 'cd \!* ; ls; pwd'
+    set groupname = "("`id | cut -f3 -d'(' | cut -f1 -d')'`")"
+    set prompt_prefix = "\[${prompt_color}`whoami`${groupname}@`hostname`${reset_code} "
+    set prompt_suffix = "\]\n\[${cmdindex_color}\!${reset_code}\] $CURR_SHELL ${bold}"'$'"${reset_code} "
+    alias cd 'cd \!* ; ls; pwd; set prompt="${prompt_prefix}${cwd_color}$cwd${reset_code}${prompt_suffix}"'
+endif

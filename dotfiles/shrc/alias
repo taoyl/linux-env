@@ -1,0 +1,18 @@
+# common aliases
+h=history
+tmux=tmux -2
+ll=ls -alF
+..=cd ..
+...=cd ../..
+..2=cd ../..
+..3=cd ../../..
+..4=cd ../../../..
+..5=cd ../../../../..
+..6=cd ../../../../../..
+grep=grep -nE --color
+pgrep=grep -nP --color
+du0=du -h --max-depth=0 | sort
+du1=du -h --max-depth=1 | sort
+lsd=find . -maxdepth 1 -type d | sort
+dfind=find -type d -name
+ffind=find -type f -name

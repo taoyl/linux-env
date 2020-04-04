@@ -7,12 +7,15 @@ set nocompatible
 execute pathogen#infect()
 
 
-" set the runtime path to include Vundle and powerline-status
+" Add runtime paths
 if has("win32")
     set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
 else
     set rtp+=$HOME/.vim/bundle/Vundle.vim
+    " powerline package directory
     set rtp+=$HOME/.local/lib/python3.6/site-packages/powerline/bindings/vim
+    " fzf install directory
+    set rtp+=/usr/local/opt/fzf
 endif
 
 " ------------- vundle -------------------- 
@@ -85,8 +88,7 @@ set t_Co=256  " enable 256 colors
 if has("win32")
     set guifont=Courier_New:h11
 else
-    " set guifont=Courier\ 10\ Pitch\ 12
-    set guifont=DejaVu\ Sans\ Mono\ 11
+    set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
 endif
 syntax on
 set cursorcolumn          " enable vertical cursor
@@ -191,24 +193,23 @@ nnoremap <leader>] :lnext<CR>
 nnoremap <leader>[ :lprev<CR>
 
 
-
-
 " ------------- ctrlp ----------------------- 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 " set working directory when invoking ctrlp without start dir
 let g:ctrlp_working_path_mode = 'ra'
 
+" --------------- show status line ----------
+set laststatus=2   " Always show the statusline
+set showtabline=2  " Show buffer line when using powerline
 
 " ------------- Powerline ------------------- 
 " Powerline is replaced by powerline-status
-set laststatus=2   " Always show the statusline
 "let g:Powerline_symbols = 'fancy'
 "display full filename. Use short to display a short path
 " let g:Powerline_stl_path_style = 'short'
 " let g:Powerline_cache_enabled = 0
 " let g:Powerline_dividers_override = ['>>', '>', '<<', '<']
-
 
 " ------------- Lightline ------------------- 
 " Use lightline to replace powerline
