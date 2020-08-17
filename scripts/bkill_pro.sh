@@ -3,7 +3,7 @@
 ## File Name     :  bkill_pro.sh
 ## Author        :  yuliang.tao (yuliang.tao@bitmain.com)
 ## Created At    :  Tue 08 Jan 2019 10:12:02 PM CST
-## Last Modified :  Fri 18 Jan 2019 11:51:05 AM CST
+## Last Modified :  Mon 17 Aug 2020 15:43:05 PM CST
 ##
 ##****************************************************************************
 ## Description   : Util for kill jobs.
@@ -15,7 +15,7 @@
 ##
 ##****************************************************************************
 ## Change History:  R0.1 2019-01-08 | Initial creation.
-##
+##                  R0.2 2020-08-17 | Add time range filter and queue filter.
 ##****************************************************************************
 
 # bjobs output format
