@@ -125,6 +125,10 @@ Plugin 'matchit.zip'
 " Vim session
 Plugin 'sessions.vim'
 
+" Version control plugins
+" Perforce
+Plugin 'nfvs/vim-perforce'
+
 " 2.plugins from http://vim-scripts.org/vim/scripts.html
 " Plugin 'sessions.vim'
 
