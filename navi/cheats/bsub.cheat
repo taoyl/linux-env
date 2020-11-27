@@ -1,0 +1,35 @@
+%bsub
+
+# Check all queue status
+bqueues
+
+# Check the server host status of q queue
+bhosts -w <queue>
+
+# Submit a job
+bsub -Ip -J <alias> -q <queue> <command>
+
+# Check host resource on a specific queue and sorting according on left mem
+bhosts -w <queue> | \grep ok | awk -F'.' '{print $1}' | xargs lsload | sort -n -k12
+
+# Submit a job using most-resourcable host a queue
+bsub -Ip -J <alias> -q regr_high -m <host> <command>
+$host: bhosts -w regr_high | \grep ok | awk -F'.' '{print $1}' | xargs lsload | sort -n -k12 | tail -n1 | awk -F'.' '{print $1}'
+
+# Launch verdi with daidir in bootenv
+bsub -Ip verdi -nonlogo -syntaxerrormax 10000 +systemverilogext+.sv +systemverilogext+.v +define+DUMP +define+DEBUSSY -sv -ssy -ssv -ssz -2005 -2012 -top <top> <kdb> <fsdb> &
+$ kdb: find $OUT_HOME/*/config/*/pub/sim -type d -name "*.daidir" | sed -n '1p' | perl -ne 'if(/daidir/){print "-dbdir $_";}else {print "-2012";}'
+$ fsdb: ls $OUT_HOME/*/config/*/pub/sim/*.vf | sed -n '1p' | perl -ne 'if(/vf$/){print "-ssf $_";}else {print "-2005";}'
+
+# Launch verdi with kdb in bootenv
+bsub -Ip verdi -nonlogo -syntaxerrormax 10000 +systemverilogext+.sv +systemverilogext+.v +define+DUMP +define+DEBUSSY -sv -ssy -ssv -ssz -2005 -2012 -top <top> <kdb> <fsdb> &
+$ kdb: find $OUT_HOME/*/config/*/pub/sim -type d -name "kdb.elab++" | sed -n '1p' | perl -ne 'if(/elab/){print "-elab $_";}else {print "-2012";}'
+$ fsdb: ls $OUT_HOME/*/config/*/pub/sim/*.vf | sed -n '1p' | perl -ne 'if(/vf$/){print "-ssf $_";}else {print "-2005";}'
+
+# Launch verdi with flist in bootenv
+bsub -Ip verdi -nonlogo -syntaxerrormax 10000 +systemverilogext+.sv +systemverilogext+.v +define+DUMP +define+DEBUSSY -sv -ssy -ssv -ssz -2005 -2012 -top <top> <flist> <fsdb> &
+$ flist: ls $OUT_HOME/*/config/*/pub/sim/verdi*.f | sed -n '1p' | perl -ne 'if(/verdi/){print "-f $_";}else {print "-2012";}'
+$ fsdb: ls $OUT_HOME/*/config/*/pub/sim/*.vf | sed -n '1p' | perl -ne 'if(/vf$/){print "-ssf $_";}else {print "-2005";}'
+
+
+

@@ -1,0 +1,40 @@
+% find operations
+
+# W1:Search patterns in specific file types
+find . -type f -name <filetype> -print0 | xargs -0 grep <pattern>
+
+# W2:Search patterns in specific file types
+find . -type f -name <filetype> -exec grep -i -H <pattern> {} \;
+
+# Recursively delete empty dirs
+find . -type d -empty -delete
+
+# Recursively delete filename with a certain pattern
+find . -type f -exec rm {} \;
+
+# Recursively delete file with size lager than <size>M
+find . -type f -size +<size>M -exec rm {} \;
+
+# Find files or symbolic links with multiple file externsions
+find . \(-type f -o -type l\) -name "*.v" -o -name "*.sv" 
+
+# Find all files with a type but excluding one filename and get their basename
+find . -type f -name "*.v" ! -name "top.v" -exec basename {} \;
+
+# Find all directories containing some types of files
+find . -type f -name "*.c" -o -name "*.cpp" | xargs dirname | sort -u
+
+# find and rename filename (keep dirname unchanged) of some types of files
+find . -type f \(-name "*.sv" -o -name "*.v"\) -exec bash -c 'mv $0 $(dirname $0)/prefix_$(basename $0)' {} \;
+
+# update some patterns in some types of files
+find . -type f \(-name "*.sv" -o -name "*.v"\) | xargs sed -i -r 's#<old_pattern>#<new_pattern>#g'
+
+# Add a prefix to all instance names of a verilog module
+find .  -type f \(-name "*.sv" -o -name "*.v"\) | xargs egrep '^\s*<module>\s+' -l | xargs sed -i -r 's#^(\s*<module>\s+)(\w+)#\1<prefix>_\2#'
+
+# Diff two unsorted files
+diff <(sort <file1>) <(sort <file2>)
+
+# Diff two directory tree
+diff <(cd <dir1> && find | sort) <(cd <dir2> && find | sort)
