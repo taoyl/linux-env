@@ -31,5 +31,6 @@ bsub -Ip verdi -nonlogo -syntaxerrormax 10000 +systemverilogext+.sv +systemveril
 $ flist: ls $OUT_HOME/*/config/*/pub/sim/verdi*.f | sed -n '1p' | perl -ne 'if(/verdi/){print "-f $_";}else {print "-2012";}'
 $ fsdb: ls $OUT_HOME/*/config/*/pub/sim/*.vf | sed -n '1p' | perl -ne 'if(/vf$/){print "-ssf $_";}else {print "-2005";}'
 
-
+# Check pending jobs in queue
+bjobs -u all | \grep 'PEND.*<queue>' | awk '{print $2}' | sort | uniq -c | sort -nr
 
