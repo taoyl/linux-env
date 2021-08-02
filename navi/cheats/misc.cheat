@@ -1,0 +1,5 @@
+# Send a command to all tmux panes on all windows in current session
+tmux list-panes -s -F "#{session_name}:#{window_index}.#{pane_index}" | xargs -I {} tmux send-keys -t {} '<Commands>' C-m
+
+# Send a command to all tmux panes on all windows in all sessions
+tmux list-panes -a -F "#{session_name}:#{window_index}.#{pane_index}" | xargs -I {} tmux send-keys -t {} '<Commands>' C-m
