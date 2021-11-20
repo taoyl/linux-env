@@ -99,6 +99,7 @@ Plugin 'chrisbra/csv.vim'
 Plugin 'verilog_systemverilog.vim'
 Plugin 'vim-scripts/upf.vim'
 Plugin 'taoyl/vim-vlogautoinst'
+Plugin 'vim-scripts/verilog_emacsauto.vim'
 
 " grep & search
 " Plugin 'mhinz/vim-grepper'  "replaced by fzf
