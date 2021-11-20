@@ -6,6 +6,20 @@
 "-----------------------------------------------------------------------------
 " User function definitions
 "-----------------------------------------------------------------------------
+" function! AppendLines{{{
+function! AppendLines(lines, s_lineno)
+    " Append lines to s_lineno
+    let i = a:s_lineno
+    for line in a:lines
+        call append(i, line)
+        i += 1
+    endfor
+
+    return i
+endfunction
+" }}}
+
+
 " function! DiffRemote {{{
 function! DiffRemote()
     " Diff current buffer file with the file on server
@@ -50,12 +64,12 @@ function! AddFileHeader(company, prefix, ...)
 
     " start line number
     if a:0 > 1
-        let curr_line_num = a:2
+        let curr_lineno = a:2
     else
-        let curr_line_num = 0
+        let curr_lineno = 0
     endif
 
-    call append(curr_line_num, separator_line)
+    call append(curr_lineno, separator_line)
 
     " Company copyright
     if a:company == 1
@@ -63,35 +77,45 @@ function! AddFileHeader(company, prefix, ...)
         let copyright_space_num = (78 - strlen(copyright_text)) / 2 - strlen(separator_prefix)
         let copyright_prefix_spaces = repeat(" ", copyright_space_num)
 
-        call append(curr_line_num + 1,  separator_prefix)
-        call append(curr_line_num + 2,  separator_prefix.copyright_prefix_spaces.copyright_text)
-        call append(curr_line_num + 3,  separator_prefix.repeat(" ", 28)."ALL RIGHTS RESERVED")
-        call append(curr_line_num + 4,  separator_prefix)
-        call append(curr_line_num + 5,  separator_line)
-        let curr_line_num += 5
+        call append(curr_lineno + 1,  separator_prefix)
+        call append(curr_lineno + 2,  separator_prefix.copyright_prefix_spaces.copyright_text)
+        call append(curr_lineno + 3,  separator_prefix.repeat(" ", 28)."ALL RIGHTS RESERVED")
+        call append(curr_lineno + 4,  separator_prefix)
+        call append(curr_lineno + 5,  separator_line)
+        let curr_lineno += 5
     endif
  
     " Other header information
-    call append(curr_line_num + 1 , separator_prefix." File Name     :  ".expand("%:t"))
-    call append(curr_line_num + 2 , separator_prefix." Author        :  ".
+    call append(curr_lineno + 1 , separator_prefix." File Name     :  ".expand("%:t"))
+    call append(curr_lineno + 2 , separator_prefix." Author        :  ".
                 \ $USER." (".$AUTHOR_EMAIL.")")
-    call append(curr_line_num + 3 , separator_prefix." Created At    :  ".
+    call append(curr_lineno + 3 , separator_prefix." Created At    :  ".
                 \ strftime("%c"))
-    call append(curr_line_num + 4 , separator_prefix." Last Modified :  ".
+    call append(curr_lineno + 4 , separator_prefix." Last Modified :  ".
                 \ strftime("%c"))
-    call append(curr_line_num + 5 , separator_prefix)
-    call append(curr_line_num + 6 , separator_line)
-    call append(curr_line_num + 7 , separator_prefix." Description   :  ")
-    call append(curr_line_num + 8 , separator_prefix)
-    call append(curr_line_num + 9 , separator_line)
-    call append(curr_line_num + 10, separator_prefix." Change History:  R0.1 ".
+    call append(curr_lineno + 5 , separator_prefix)
+    call append(curr_lineno + 6 , separator_line)
+    call append(curr_lineno + 7 , separator_prefix." Description   :  ")
+    call append(curr_lineno + 8 , separator_prefix)
+    call append(curr_lineno + 9 , separator_line)
+    call append(curr_lineno + 10, separator_prefix." Change History:  R0.1 ".
                 \ strftime("%Y-%m-%d")." | Initial creation.")    
-    call append(curr_line_num + 11, separator_prefix)
-    call append(curr_line_num + 12, separator_line)
+    call append(curr_lineno + 11, separator_prefix)
+    call append(curr_lineno + 12, separator_line)
+    let curr_lineno += 12
     echohl WarningMsg | echo "File header added" | echohl none
 
-    let curr_line_num += 12
-    return curr_line_num
+    let curr_ft = &filetype
+    if curr_ft == 'verilog' || curr_ft == 'systemverilog' || curr_ft == 'verilog_systemverilog'
+        call append(curr_lineno + 1, '')
+        call append(curr_lineno + 2, 'module '.expand('%:t:r').'(')
+        call append(curr_lineno + 3, ');')
+        call append(curr_lineno + 4, '')
+        call append(curr_lineno + 5, 'endmodule')
+        let curr_lineno += 5
+    endif
+
+    return curr_lineno
 
 endfunction
 " }}}
@@ -100,7 +124,7 @@ endfunction
 " function! AddScrHeader {{{
 function! AddScrHeader(scr_type)
     " scr_type: bash, tcsh, tclsh, python, perl
-    let curr_line_num = 0
+    let curr_lineno = 0
     let interpreter = '#!/bin/'
     if a:scr_type == 'python3' || a:scr_type == 'perl'
         let interpreter = interpreter.'env '.a:scr_type
@@ -204,6 +228,102 @@ function! AddPythonArgParse()
     call append(curr_lineno+13, "    args = parser.parse_args()")
     call append(curr_lineno+14, "    print('file={}, sort={}, bypass={}'.format(args.file, args.sort, args.bypass))")
     call append(curr_lineno+15, '')
+endfunction
+" }}}
+
+" function! VlogEmacsTemplate(stub, v2k=1){{{
+function! VlogEmacsTemplate(stub, v2k=1)
+    " Add verilog emacs template code
+    " @param
+    "     stub: Generate stub module from an existing module
+    "      v2k: Use verilog-2001 style port declaration
+
+    " Check file type
+    let curr_ft = &filetype
+    if curr_ft != 'verilog' || curr_ft != 'systemverilog' || curr_ft != 'verilog_systemverilog'
+        echohl WarningMsg | echo "Not vlog file type" | echohl none
+        return
+    endif
+
+    " record current line number
+    let curr_lineno = line('.')
+
+    " check if there is an existing module declaration
+    call cursor(1, 1)
+    let mod_lineno = search('^\s*module\s\+\w\+\s*(', 'W')
+    if mod_lineno != 0
+        echohl WarningMsg | echo 'Found a module at line '.mod_lineno | echohl none
+        let mod_line = getline(mod_lineno)
+        if a:v2k != 1
+            let mod_line = substitute(mod_line, '(.*', '(/*AUTOARG*/', 'g')
+            call setline(mod_lineno, mod_line)
+            let curr_lineno = mod_lineno + 1
+        else
+            if a:stub == 1
+                let mod_line = substitute(mod_line, '(.*', '(/*AUTOINOUTPARAM("'.expand('%:t:r').'")*/', 'g')
+                call setline(mod_lineno, mod_line)
+                let lines = ['(/*AUTOINOUTMODULE("'.expand('%:t:r').'")*/']
+            else
+                let mod_line = substitute(mod_line, '(.*', '(/*AUTOOUPUT*/', 'g')
+                call setline(mod_lineno, mod_line)
+                let lines = ['    /*AUTOINOUT*/', '    /*AUTOINPUT*/']
+            endif
+            " +1 because we assume it has a ');' line
+            let curr_lineno = AppendLines(lines, mod_lineno) + 1
+        endif
+    else "New a module
+        if a:v2k != 1
+            call append(curr_lineno, 'module '.expand('%:t:r').'(/*AUTOARG*/')
+            let curr_lineno += 1
+        else
+            if a:stub == 1
+                let lines = ['module '.expand('%:t:r').'#(/*AUTOINOUTPARAM("'.expand('%:t:r').'")*/', ') (/*AUTOINOUTMODULE("'.expand('%:t:r').'")*/']
+            else
+                let lines = ['module '.expand('%:t:r').'(/*AUTOOUPUT*/', '    /*AUTOINOUT*/', '    /*AUTOINPUT*/']
+            endif
+            let curr_lineno = AppendLines(lines, curr_lineno)
+        endif
+        call append(curr_lineno, ');')
+        let curr_lineno += 1
+    endif
+
+    " For stub module, add PARAM and INOOUT
+    if a:stub == 1 && a:v2k != 1
+        let lines = ['/*AUTOINOUTPARAM("'.expand('%:t:r').'")*/', '/*AUTOINOUTMODULE("'.expand('%:t:r').'")*/']
+        let curr_lineno = AppendLines(lines, curr_lineno)
+    endif
+
+    " general autos
+    let lines = ['', '/*AUTOWIRE*/', '/*AUTOREG*/', '/*AUTOTIEOFF*/', '', 'wire unused_ok = &{1'."'".'b0,']
+    let lines += ['                   /*AUTOUNUSED*/', "                   1'b0};"]
+    let curr_lineno = AppendLines(lines, curr_lineno)
+
+    if a:stub == 0
+        let lines = ['/* InstModule AUTO_TEMPLATE (']
+        let lines += ['    .pin@_\(.*\) (wire\1of\2), //@ is short-hand for \([0-9]+\)']
+        let lines += ['    .signal (signal[]), //[] expands bus range']
+        let lines += ['    .\(.*\)_dbgbus_out ({@"vl-width"{1'."'".'b0}}), //tieoff']
+        let lines += ['    .\(.*\)_test (@"(if (equal vl-dir \\"input\\") \\"{\\"vl-width\\"{1'."'".'b0}}\\" \\"\\")"), //tieoff output only']
+        let lines += ['    .\(.*\) (@"(downcase vl-name)"[]), //lower-case']
+        let lines += ['    .in(@"vl-cell-name"_in[]), //include instance name using vl-cell-name']
+        let lines += ['    .out(@"(substring vl-cell-name 2)"_out[]), //include instance name but removing u_ prefix']
+        let lines += [');', '']
+        let lines += ['// InstModule #(/*AUTOINSTPARAM*/)', '// ) instname (/*AUTOINST*/)', '// );']
+        let curr_lineno = AppendLines(lines, curr_lineno)
+    endif
+
+    " add endmodule if no module declaration found
+    let last_lineno = line('$')
+    if mod_lineno == 0
+        let lines = ['', 'endmodule']
+        let last_lineno = AppendLines(lines, last_lineno)
+    endif
+
+    let lines = ['', '// Local Variables:', '// verilog-library-flags:("-y incdir1/ -y incdir2/")']
+    let lines += ['// verilog-library-directories:("." "dir1" "dir2" ...)', '// verilog-library-flags:("-f ./vcs.flist")']
+    let lines += ['// verilog-auto-inst-param-value:t //enable this for parameter expand, else set it to nil']
+    let last_lineno = AppendLines(lines, last_lineno)
+
 endfunction
 " }}}
 
