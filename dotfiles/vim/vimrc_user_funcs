@@ -12,7 +12,7 @@ function! AppendLines(lines, s_lineno)
     let i = a:s_lineno
     for line in a:lines
         call append(i, line)
-        i += 1
+        let i += 1
     endfor
 
     return i
