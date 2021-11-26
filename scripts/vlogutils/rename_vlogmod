@@ -1,0 +1,175 @@
+#!bin/bash
+#
+# Author: taoyuliang
+#
+# Rename verilog module
+#
+
+usage () {
+    echo "Usage: bash rename_vlogmod.sh [options]"
+    echo "Options:"
+    echo "    -p|--prefix PREFIX : add PREFIX to vlog module name"
+    echo "    -s|--suffix SUFFIX : add SUFFIX to vlog module name"
+    echo "    [--def_file FILE]* : specify the file containing vlog module definition that should be updated, can be used multiple times"
+    echo "    [--def_dir  DIR]*  : specify the dir containing files that should be updated for module definition, can be used multiple times"
+    echo "    [--inst_file FILE]*: specify the file containing vlog instances that should be updated, can be used multiple times"
+    echo "    [--inst_dir  DIR]* : specify the dir containing files that should be updated for instances, can be used multiple times"
+    echo "    [--exclude_file FILE]*: specify the ecluded filenames"
+    echo "    [--exclude_mod MOD_NAME]* : specify the excluded module names"
+    echo "    --inst_only        : Only update instance, not module definition"
+    echo "    --update_filename  : rename the file name if its vlog module name was changed"
+    exit 0
+}
+
+# parse command-line args
+POSITIONAL=()
+def_files=()
+def_dirs=()
+inst_files=()
+inst_dirs=()
+exclude_files=()
+exclude_mods=()
+update_inst_only=0
+update_filename=0
+prefix=""
+suffix=""
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -p|--prefix)
+            prefix=$2
+            shift; shift;;
+        -s|--suffix)
+            suffix=$2
+            shift; shift;;
+        --inst_only)
+            update_inst_only=1
+            shift;;
+        --update_filename)
+            update_filename=1
+            shift;;
+        --def_file)
+            def_files+=("$2")
+            shift; shift;;
+        --def_dir)
+            def_dirs+=("$2")
+            shift; shift;;
+        --inst_file)
+            inst_files+=("$2")
+            shift; shift;;
+        --inst_dir)
+            inst_dirs+=("$2")
+            shift; shift;;
+        --exclude_file)
+            exclude_files+=("$2")
+            shift; shift;;
+        --exclude_mod)
+            exclude_mods+=("$2")
+            shift; shift;;
+        -h|--help)
+            usage
+            shift;;
+        *) # unknown options
+            POSITIONAL+=("$1")
+            shift;;
+    esac
+done
+
+
+# Sanity check
+if [[ "${def_dirs[*]}" == "" && "${def_files[*]}" == "" ]]; then
+    echo "**Error: you must specify either --def_dir or --def_file"
+    usage
+fi
+if [[ "$prefix" == "" && "$suffix" == "" ]]; then
+    echo "**Error: you must specify at least one of --prefix or --suffix"
+    usage
+fi
+
+#1. find out all def vlog files
+for dir in "${def_dir[@]}"; do
+    if [[ ! -e "$dir" ]]; then
+        echo "** Directory $dir doesn't exist"
+        continue
+    fi
+
+    while read -r vlog; do
+        def_files+=("$vlog")
+    done < <(find $dir -type f -name "*.v" -o -name "*.sv")
+done
+# convert to absolute path and unique
+def_files=($(tr ' ' '\n' <<< "${def_files[@]}" | xargs -I {} realpath {} | sort -u | tr '\n' ' '))
+echo "DefFiles: ${def_files[@]}"
+
+#2. process all vlog files and find out all module declaration
+def_mods=()
+for vlog in "${def_files[@]}"; do
+    if [[ ! -e "$vlog" ]]; then
+        echo "** File $vlog doesn't exist"
+        continue
+    fi
+
+    # skip excluded files
+    if [[ "${exclude_files[@]}" =~ "$(basename $vlog)" ]]; then 
+        echo "$vlog is skipped."
+        continue
+    fi
+
+    mods_in_curr_file=()
+    while read -r mod; do
+        if [[ "${exclude_mods[@]}" =~ "$mod" ]]; then
+            continue
+        fi
+        def_mods+=("$mod")
+        mods_in_curr_file+=("$mod")
+    done < <(egrep '^\s*module\s+\w+' $vlog | sed -r 's/.*module\s+(\w+).*/\1/')
+
+    # If all modules in this file are excluded, we are not going to update module name and file name
+    if [[ "${mods_in_curr_file[*]}" == "" ]]; then
+        continue
+    fi
+    curr_mods_pattern="($(tr ' ' '|' <<< "${mods_in_curr_file[@]}"))"
+
+
+    # add prefix or suffix to vlog module declaration
+    if [[ "$update_inst_only" == "0" ]]; then
+        echo "sed -r -i 's#^(\s*module\s+)(\w+)#\1$prefix\2$suffix#g' $vlog"
+        sed -r -i '/'"$curr_mods_pattern"'/{s#^(\s*module\s+)(\w+)#\1'"$prefix"'\2'"$suffix"'#g}' $vlog
+    fi
+
+    # rename file
+    if [[ "$update_filename" == "1" ]]; then
+        ext="$(sed -r 's/.*(\.\w+)$/\1/' <<< $(basename $vlog))"
+        fname="$(sed -r 's/(.*)\.\w+$/\1/' <<< $(basename $vlog))"
+        mv $vlog "$(dirname $vlog)/${prefix}${fname}${suffix}${ext}"
+    fi
+done
+
+# unique declared modules
+def_mods=($(tr ' ' '\n' <<< "${def_mods[@]}" | sort -u | tr '\n' ' '))
+echo "DefModules: ${def_mods[@]}"
+
+#3. find out all inst vlog files
+for dir in "${inst_dir[@]}"; do
+    if [[ ! -e "$dir" ]]; then
+        echo "** Directory $dir doesn't exist"
+        continue
+    fi
+
+    while read -r vlog; do
+        inst_files+=("$vlog")
+    done < <(find $dir -type f -name "*.v" -o -name "*.sv")
+done
+# convert to absolute path and unique
+inst_files=($(tr ' ' '\n' <<< "${inst_files[@]}" | xargs -I {} realpath {} | sort -u | tr '\n' ' '))
+echo "InstFiles: ${inst_files[@]}"
+
+#4. process all instance mod renaming
+for mod in "${def_mods[@]}"; do
+    echo "module: $mod --> ${prefix}${mod}${suffix}"
+    for vlog in "${inst_files[@]}"; do
+        echo "    sed -r -i 's#^(\\s*)$mod(\\s+)#\\1${prefix}${mod}${suffix}\\2#g' $vlog"
+        sed -r -i 's#^(\s*)'"$mod"'(\s+)#\1'"${prefix}${mod}${suffix}"'\2#g' $vlog
+    done
+done
+
